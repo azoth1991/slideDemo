@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>TweenJS: Simple Tweening Example</title>
+</head>
+<link rel="stylesheet" type="text/css" href="./css/main.css">
+<body onload="game.init();">
+	<div class="view-box"></div>
+</body>
+<script id="editable">
+var view = document.getElementsByClassName('view-box')[0];
+var self = {};
+var game = {
+	init: function() {
+		self = this;
+		this.initImage();
+	},
+	imageSourceList: ['./imgs/1.jpeg','./imgs/2.jpeg','./imgs/3.jpeg','./imgs/4.jpeg','./imgs/1.jpeg','./imgs/2.jpeg','./imgs/3.jpeg','./imgs/4.jpeg','./imgs/1.jpeg','./imgs/2.jpeg','./imgs/3.jpeg','./imgs/4.jpeg','./imgs/1.jpeg','./imgs/2.jpeg','./imgs/3.jpeg','./imgs/4.jpeg'],
+	imageList: [],
+	imageIndex: 0,
+	scoll: 0,
+	start: 0,
+	des: 5000,
+	initImage: function() {
+		this.imageSourceList.forEach(function(v) {
+			var img = new Image();
+			img.src = v;
+			img.style.width = '100%';
+			img.style.height = '100%';
+			img.style.position = 'absolute';
+			img.style.opacity = 0;
+			view.appendChild(img);
+			this.imageList.push(img);
+		},this);
+		this.imageList[0].style.opacity = 1;
+	},
+	opacityReduce: function() {
+		var img = this.imageList[this.imgIndex];
+		img.style.opacity = ((this.imgIndex+1)*this.des - this.scoll)/this.des;
+	},
+	opacityIncrease: function() {
+		var img = this.imageList[this.imgIndex+1];
+		img.style.opacity = (this.scoll - (this.imgIndex)*this.des)/this.des;
+	},
+	touchmove: function(evt) {
+		self.scoll = (self.start - evt.touches[0].clientY) + self.scoll;
+		self.scoll = self.scoll > 0 ? self.scoll : 0;
+		self.imgIndex = self.scoll / self.des|0;
+		self.opacityReduce();
+		self.opacityIncrease();
+	},
+	touchend: function() {
+		self.start = 0;
+	},
+	touchcancel: function() {
+		self.start = 0;
+	},
+	touchstart: function(evt) {
+		self.start = evt.touches[0].clientY;
+	}
+}
+
+view.addEventListener('touchstart', game.touchstart, false)
+view.addEventListener('touchmove', game.touchmove, false)
+view.addEventListener("touchend", game.touchend, false);
+view.addEventListener("touchcancel", game.touchcancel, false);
+
+</script>
+</html>
